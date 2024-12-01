@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shakti's Space - Notes Download</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <h1>Shakti's Space</h1>
+        <a href="#" onclick="authenticate()">Go to Upload Page</a>
+    </header>
+    <div class="search-container">
+        <input type="text" id="search" placeholder="Search for notes...">
+        <button id="search-btn" onclick="searchFiles()">Search</button>
+    </div>
+    <div class="file-list" id="file-list">
+        <!-- List of files will be populated here -->
+    </div>
+    <script src="script.js"></script>
+    <script>
+        const adminUserId = "SHAKTI@1997";
+        const adminPasswordHash = "ae76c054a4c06125b11da2c3b1a02642e7659094a5dfe0926babf9f8967e00ae";
+
+        async function authenticate() {
+            const userId = prompt("Enter User ID:");
+            const password = prompt("Enter Password:");
+
+            const passwordHash = await hashPassword(password);
+
+            if (userId === adminUserId && passwordHash === adminPasswordHash) {
+                window.location.href = "admin.html";
+            } else {
+                alert("Access denied. Only admin is allowed to access this page.");
+            }
+        }
+
+        async function hashPassword(password) {
+            const encoder = new TextEncoder();
+            const data = encoder.encode(password);
+            const hashBuffer = await crypto.subtle.digest("SHA-256", data);
+            const hashArray = Array.from(new Uint8Array(hashBuffer));
+            const hashHex = hashArray.map(byte => byte.toString(16).padStart(2, "0")).join("");
+            return hashHex;
+        }
+
+        displayFiles();
+    </script>
+</body>
+</html>
